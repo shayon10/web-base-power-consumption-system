@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <!-- Plotly CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+    
+<body>
+    <style>
+        .bt{
+            margin-top: 20px;
+            margin-left: 1000px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            cursor:pointer;
+        }
+        .power{
+             font-size: large;
+             color: rgb(197, 128, 128);
+             margin-bottom: 100px;
+        }
+        .des{
+            color: black;
+        }
+        .des:hover{
+            font-size: larger;
+        }
+    </style>
+        
+        <form action="{% url 'latest_voltage_data' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Fetch the latest Status</button>
+        </form>
+    
+    <p class ="power">
+        Total Current consumed: <span class = "des">{{total_voltage}} V </span>
+    </p>
+    <div id="plotly-graph"></div>
+
+    <script>
+        // Get data passed from Django view
+        var xData = {{ x_data | safe }};
+        var yData = {{ y_data | safe }};
+        var hoverText = {{ hover_text | safe }};
+        // Generate Plotly graph using received data
+        var plotData = [{
+            x: xData,
+            y: yData,
+            mode: 'lines+markers',
+            text: hoverText,
+            type: 'scatter'
+        }];
+        
+
+        var layout = {
+            title: 'Instant Voltage vs Time Graph',
+            xaxis: { title: 'Time' },
+            yaxis: { title: 'Data' }
+        };
+        
+        Plotly.newPlot('plotly-graph', plotData, layout);
+        
+    </script>
+       
+    
+</body>
+
+
+</html>
